@@ -3788,9 +3788,297 @@ Available components:
 </div>
 </div>
 <p>Find the mean population, household income and per capita income grouped by clusters. In addition, display the most frequent county that can be observed within each cluster.</p>
+<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-13_21e5804b7eec50fae629aba9a2e3994c">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>acs_map_t <span class="ot">=</span> acs_il_t <span class="sc">%&gt;%</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cluster =</span> <span class="fu">as.factor</span>(km_1<span class="sc">$</span>cluster))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>acs_map_t_cl <span class="ot">=</span> acs_map_t <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(cluster) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">m_population =</span> <span class="fu">mean</span>(pop),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">m_hhincome =</span> <span class="fu">mean</span>(hh_income),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">m_pcincome =</span> <span class="fu">mean</span>(income))</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(acs_map_t_cl, <span class="at">caption =</span> <span class="st">&quot;mean population, household income </span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="st">      and per capita income grouped by clusters&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>mean population, household income and per capita income grouped by clusters</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">cluster</th>
+<th style="text-align: right;">m_population</th>
+<th style="text-align: right;">m_hhincome</th>
+<th style="text-align: right;">m_pcincome</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: right;">4126.795</td>
+<td style="text-align: right;">163369.92</td>
+<td style="text-align: right;">78493.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: right;">5107.751</td>
+<td style="text-align: right;">87549.29</td>
+<td style="text-align: right;">41192.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: right;">3023.996</td>
+<td style="text-align: right;">27265.57</td>
+<td style="text-align: right;">15527.79</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: right;">4535.430</td>
+<td style="text-align: right;">112380.92</td>
+<td style="text-align: right;">59990.76</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: right;">4357.746</td>
+<td style="text-align: right;">64282.81</td>
+<td style="text-align: right;">31434.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: right;">4029.991</td>
+<td style="text-align: right;">46117.11</td>
+<td style="text-align: right;">23254.56</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>acs_map_t_county <span class="ot">=</span> acs_map_t <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(cluster, county) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>()) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="fu">which.max</span>(n))</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(acs_map_t_county, <span class="at">caption =</span> <span class="st">&quot;the most frequent county that </span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="st">      can be observed within each cluster&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>the most frequent county that can be observed within each cluster</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">cluster</th>
+<th style="text-align: left;">county</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: right;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: right;">177</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: right;">332</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: right;">120</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: right;">281</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: right;">370</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>As you might have seen earlier, it’s not always clear which number of clusters is the optimal choice. To automate K Means clustering, program a function based on <code>kmeans()</code> that takes K as an argument. You can fix the other arguments, e.g. such that a specific dataset is always used when calling the function.</p>
 <p>We want to utilize this function to iterate over multiple Ks (e.g., K = 2, …, 10) and -- each time -- add the resulting cluster membership as a new variable to our (cleaned) original data frame (<code>acs_il_t</code>). There are multiple solutions for this task, e.g. think about the <code>apply</code> family or <code>for</code> loops.</p>
 <p>Finally, display the first rows of the updated data set (with multiple cluster columns).</p>
+<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-14_797fc8bb6e8b78495fa83b46b0878a30">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>apply_kmeans <span class="ot">&lt;-</span> <span class="cf">function</span>(K, dataset) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  kmeans_model <span class="ot">=</span> <span class="fu">kmeans</span>(dataset, <span class="at">centers =</span> K)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(kmeans_model<span class="sc">$</span>cluster)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>cluster_list <span class="ot">=</span> <span class="fu">list</span>()</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>acs_il_t <span class="ot">=</span> acs_il_t <span class="sc">%&gt;%</span> <span class="fu">na.omit</span>()</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>acs_il_t_loop <span class="ot">=</span> acs_il_t <span class="sc">%&gt;%</span> <span class="fu">select</span>(pop, hh_income, income)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(K <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  new_var <span class="ot">=</span> <span class="fu">paste0</span>(<span class="st">&quot;cluster_k_&quot;</span>, K)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  clusters <span class="ot">=</span> <span class="fu">apply_kmeans</span>(K, acs_il_t_loop)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  cluster_list[[new_var]] <span class="ot">=</span> clusters</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>cluster_df <span class="ot">=</span> <span class="fu">as.data.frame</span>(cluster_list)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>acs_il_t <span class="ot">=</span> <span class="fu">cbind</span>(acs_il_t, cluster_df)</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(acs_il_t))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 22%">
+<col style="width: 2%">
+<col style="width: 5%">
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">state</th>
+<th style="text-align: left;">county</th>
+<th style="text-align: left;">tract</th>
+<th style="text-align: left;">NAME</th>
+<th style="text-align: right;">pop</th>
+<th style="text-align: right;">hh_income</th>
+<th style="text-align: right;">income</th>
+<th style="text-align: right;">cluster_k_2</th>
+<th style="text-align: right;">cluster_k_3</th>
+<th style="text-align: right;">cluster_k_4</th>
+<th style="text-align: right;">cluster_k_5</th>
+<th style="text-align: right;">cluster_k_6</th>
+<th style="text-align: right;">cluster_k_7</th>
+<th style="text-align: right;">cluster_k_8</th>
+<th style="text-align: right;">cluster_k_9</th>
+<th style="text-align: right;">cluster_k_10</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: left;">806002</td>
+<td style="text-align: left;">Census Tract 8060.02, Cook County, Illinois</td>
+<td style="text-align: right;">7304</td>
+<td style="text-align: right;">56975</td>
+<td style="text-align: right;">23750</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: left;">806003</td>
+<td style="text-align: left;">Census Tract 8060.03, Cook County, Illinois</td>
+<td style="text-align: right;">7577</td>
+<td style="text-align: right;">53769</td>
+<td style="text-align: right;">25016</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: left;">806400</td>
+<td style="text-align: left;">Census Tract 8064, Cook County, Illinois</td>
+<td style="text-align: right;">2684</td>
+<td style="text-align: right;">62750</td>
+<td style="text-align: right;">30154</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: left;">806501</td>
+<td style="text-align: left;">Census Tract 8065.01, Cook County, Illinois</td>
+<td style="text-align: right;">2590</td>
+<td style="text-align: right;">53583</td>
+<td style="text-align: right;">20282</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: left;">750600</td>
+<td style="text-align: left;">Census Tract 7506, Cook County, Illinois</td>
+<td style="text-align: right;">3594</td>
+<td style="text-align: right;">40125</td>
+<td style="text-align: right;">18347</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">17</td>
+<td style="text-align: left;">031</td>
+<td style="text-align: left;">310200</td>
+<td style="text-align: left;">Census Tract 3102, Cook County, Illinois</td>
+<td style="text-align: right;">1521</td>
+<td style="text-align: right;">63250</td>
+<td style="text-align: right;">31403</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 
 </main>

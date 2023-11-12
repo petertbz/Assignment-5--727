@@ -158,8 +158,52 @@ km_1
 
 Find the mean population, household income and per capita income grouped by clusters. In addition, display the most frequent county that can be observed within each cluster.
 
+```{r}
+acs_map_t = acs_il_t %>% 
+  na.omit() %>% 
+  mutate(cluster = as.factor(km_1$cluster))
+
+acs_map_t_cl = acs_map_t %>% group_by(cluster) %>% 
+  summarise(m_population = mean(pop),
+            m_hhincome = mean(hh_income),
+            m_pcincome = mean(income))
+
+kable(acs_map_t_cl, caption = "mean population, household income 
+      and per capita income grouped by clusters")
+
+acs_map_t_county = acs_map_t %>% group_by(cluster, county) %>% 
+  summarise(n = n()) %>% 
+  slice(which.max(n))
+
+kable(acs_map_t_county, caption = "the most frequent county that 
+      can be observed within each cluster")
+```
+
 As you might have seen earlier, it's not always clear which number of clusters is the optimal choice. To automate K Means clustering, program a function based on `kmeans()` that takes K as an argument. You can fix the other arguments, e.g. such that a specific dataset is always used when calling the function.
 
 We want to utilize this function to iterate over multiple Ks (e.g., K = 2, ..., 10) and \-- each time \-- add the resulting cluster membership as a new variable to our (cleaned) original data frame (`acs_il_t`). There are multiple solutions for this task, e.g. think about the `apply` family or `for` loops.
 
 Finally, display the first rows of the updated data set (with multiple cluster columns).
+
+```{r}
+apply_kmeans <- function(K, dataset) {
+  kmeans_model = kmeans(dataset, centers = K)
+  return(kmeans_model$cluster)
+}
+
+cluster_list = list()
+acs_il_t = acs_il_t %>% na.omit()
+acs_il_t_loop = acs_il_t %>% select(pop, hh_income, income)
+
+for(K in 2:10) {
+  new_var = paste0("cluster_k_", K)
+  clusters = apply_kmeans(K, acs_il_t_loop)
+  cluster_list[[new_var]] = clusters
+}
+
+
+cluster_df = as.data.frame(cluster_list)
+acs_il_t = cbind(acs_il_t, cluster_df)
+
+kable(head(acs_il_t))
+```
