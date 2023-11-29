@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Leng Seong Che, Bozhou(Peter) Tan">
 
 <title>Assignment 5</title>
 <style>
@@ -3031,6 +3032,12 @@ vertical-align: -.125em;
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Leng Seong Che, Bozhou(Peter) Tan </p>
+          </div>
+  </div>
     
   
     
@@ -3040,7 +3047,8 @@ vertical-align: -.125em;
 </header>
 
 <p>You may work in pairs or individually for this assignment. Make sure you join a group in Canvas if you are working in pairs. Turn in this assignment as an HTML or PDF file to ELMS. Make sure to include the R Markdown or Quarto file that was used to generate it. Include the GitHub link for the repository containing these files.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-1_ce295f40acb3b89e9ee313e1ac46d3d3">
+<p>Github: <a href="https://github.com/petertbz/Final-Project-727.git" class="uri">https://github.com/petertbz/Final-Project-727.git</a></p>
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-1_a95014e1d530f2c3bd655414ad46b2f5">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(censusapi)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(magrittr)</span>
@@ -3052,7 +3060,7 @@ vertical-align: -.125em;
 <h2 class="anchored" data-anchor-id="exploring-acs-data">Exploring ACS Data</h2>
 <p>In this notebook, we use the Census API to gather data from the American Community Survey (ACS). This requires an access key, which can be obtained here:</p>
 <p>https://api.census.gov/data/key_signup.html</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-2_e71c44f5d43f22a314b44b98e08a2e3c">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-2_160fb808297c4a49c63d79c787cee22a">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cs_key <span class="ot">&lt;-</span> <span class="st">&quot;c0fd12402e23b7a95923e694f046015d624c91c5&quot;</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>acs_il_c <span class="ot">&lt;-</span> <span class="fu">getCensus</span>(<span class="at">name =</span> <span class="st">&quot;acs/acs5&quot;</span>,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">vintage =</span> <span class="dv">2016</span>,</span>
@@ -3130,7 +3138,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <p>Pull map data for Illinois into a data frame.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-3_dc623a58cc502996c0ede3f91b1b198c">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-3_6de91ebacd42ede9ada7a8a54f8526c0">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>il_map <span class="ot">&lt;-</span> <span class="fu">map_data</span>(<span class="st">&quot;county&quot;</span>, <span class="at">region =</span> <span class="st">&quot;illinois&quot;</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(il_map))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -3199,7 +3207,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <p>Join the ACS data with the map data. Not that <code>il_map</code> has a column <code>subregion</code> which includes county names. We need a corresponding variable in the ACS data to join both data sets. This needs some transformations, among which the function <code>tolower()</code> might be useful. Call the joined data <code>acs_map</code>.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-4_1499bea0f09281a3ee6b63135d0cdbf8">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-4_9ebc811a1928a2ab86ec4cb6401c3fc6">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># transform acs_il_c</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>acs_il_c<span class="sc">$</span>subregion <span class="ot">=</span> <span class="fu">tolower</span>(<span class="fu">str_remove_all</span>(acs_il_c<span class="sc">$</span>NAME, <span class="st">&quot; County, Illinois&quot;</span>))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>acs_il_c<span class="sc">$</span>subregion <span class="ot">=</span> <span class="fu">str_remove_all</span>(acs_il_c<span class="sc">$</span>subregion, <span class="st">&quot; &quot;</span>)</span>
@@ -3213,7 +3221,7 @@ vertical-align: -.125em;
 <span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>acs_map <span class="ot">=</span> <span class="fu">left_join</span>(il_map, acs_il_c, <span class="at">by =</span> <span class="st">&quot;subregion&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>After you do this, plot a map of Illinois with Counties colored by per capita income.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-5_839812e1230ff9b6a8023da79b34e412">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-5_83768548059dd8ecec939085ecaa55ac">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(acs_map) <span class="sc">+</span> </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_polygon</span>(<span class="fu">aes</span>(<span class="at">x =</span> long, <span class="at">y =</span> lat, <span class="at">group =</span> group, <span class="at">fill =</span> income)) <span class="sc">+</span> </span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -3225,7 +3233,7 @@ vertical-align: -.125em;
 <section id="hierarchical-clustering" class="level2">
 <h2 class="anchored" data-anchor-id="hierarchical-clustering">Hierarchical Clustering</h2>
 <p>We want to find clusters of counties that are similar in their population, average household income and per capita income. First, clean the data so that you have the appropriate variables to use for clustering. Next, create the distance matrix of the cleaned data. This distance matrix can be used to cluster counties, e.g. using the ward method.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-6_160bade0e17541b57a1172234721c882">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-6_5bb9df44c4bb4d2f4146727c65bed4ed">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>hclust_data <span class="ot">=</span> acs_map <span class="sc">%&gt;%</span> </span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(pop, hh_income, income) <span class="sc">%&gt;%</span> </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(scale)</span>
@@ -3233,7 +3241,7 @@ vertical-align: -.125em;
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>hc_ward <span class="ot">=</span> <span class="fu">hclust</span>(hclust_d, <span class="at">method =</span> <span class="st">&quot;ward.D2&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Plot the dendrogram to find a reasonable number of clusters. Draw boxes around the clusters of your cluster solution.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-7_33c64a13dbd42e0ec1f2c235e2bd442a">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-7_59f81a548171a78682a700f862a3d647">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hc_ward, <span class="at">main =</span> <span class="st">&quot;Ward&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">sub =</span> <span class="st">&quot;&quot;</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rect.hclust</span>(hc_ward, <span class="at">k =</span> <span class="dv">6</span>, <span class="at">border =</span> <span class="st">&quot;red&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
@@ -3241,7 +3249,7 @@ vertical-align: -.125em;
 </div>
 </div>
 <p>Visualize the county clusters on a map. For this task, create a new <code>acs_map</code> object that now also includes cluster membership as a new column. This column should be called <code>cluster</code>.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-8_11c04e44a7e911badf2692c5ed7b9777">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-8_516a8f501910881254a46d88c95dc05a">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>acs_map <span class="ot">=</span> acs_map <span class="sc">%&gt;%</span> </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cluster =</span> <span class="fu">cutree</span>(hc_ward, <span class="dv">6</span>))</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -3256,7 +3264,7 @@ vertical-align: -.125em;
 <section id="census-tracts" class="level2">
 <h2 class="anchored" data-anchor-id="census-tracts">Census Tracts</h2>
 <p>For the next section we need ACS data on a census tract level. We use the same variables as before.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-9_5ecdda71204402cc618d1d665f8034e0">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-9_cf78a8a89007a2beae7783ee5b3cb7c3">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>acs_il_t <span class="ot">&lt;-</span> <span class="fu">getCensus</span>(<span class="at">name =</span> <span class="st">&quot;acs/acs5&quot;</span>,</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">vintage =</span> <span class="dv">2016</span>,</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">vars =</span> <span class="fu">c</span>(<span class="st">&quot;NAME&quot;</span>, <span class="st">&quot;B01003_001E&quot;</span>, <span class="st">&quot;B19013_001E&quot;</span>, <span class="st">&quot;B19301_001E&quot;</span>),</span>
@@ -3353,13 +3361,13 @@ vertical-align: -.125em;
 <section id="k-means" class="level2">
 <h2 class="anchored" data-anchor-id="k-means">k-Means</h2>
 <p>As before, clean our data for clustering census tracts based on population, average household income and per capita income.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-10_66e5ef170373b0c6061195c2b200cee9">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-10_bcdfd21dd61d377cfea5afe8b48235cd">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>kclust_data <span class="ot">=</span> acs_il_t <span class="sc">%&gt;%</span> </span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(pop, hh_income, income) <span class="sc">%&gt;%</span> </span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Since we want to use K Means in this section, we start by determining the optimal number of K that results in Clusters with low within but high between variation. Plot within cluster sums of squares for a range of K (e.g. up to 20).</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-11_0905fa0589b74d7eeebbebd058b132df">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-11_ab61e531a314b67a6cffe4286fe92f1b">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fviz_nbclust</span>(kclust_data, <span class="co">#data set we want to use</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>             kmeans, <span class="co">#cluster method</span></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">&quot;wss&quot;</span>, <span class="co">#method used for estimating the optimal number of clusters</span></span>
@@ -3370,11 +3378,11 @@ vertical-align: -.125em;
 </div>
 <p>The optimal number should be 6.</p>
 <p>Run <code>kmeans()</code> for the optimal number of clusters based on the plot above.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-12_e227b22b7ab02a43a03caf49cdb57393">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-12_2a2478fbca4dfe84689f0fc698f2e04f">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>km_1 <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(kclust_data, <span class="dv">6</span>, <span class="at">nstart =</span> <span class="dv">20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Find the mean population, household income and per capita income grouped by clusters. In addition, display the most frequent county that can be observed within each cluster.</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-13_21e5804b7eec50fae629aba9a2e3994c">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-13_40e12ada77e4b70c76d9bd7a790e2e34">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>acs_map_t <span class="ot">=</span> acs_il_t <span class="sc">%&gt;%</span> </span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">na.omit</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cluster =</span> <span class="fu">as.factor</span>(km_1<span class="sc">$</span>cluster))</span>
@@ -3491,7 +3499,7 @@ vertical-align: -.125em;
 <p>As you might have seen earlier, it’s not always clear which number of clusters is the optimal choice. To automate K Means clustering, program a function based on <code>kmeans()</code> that takes K as an argument. You can fix the other arguments, e.g. such that a specific dataset is always used when calling the function.</p>
 <p>We want to utilize this function to iterate over multiple Ks (e.g., K = 2, …, 10) and -- each time -- add the resulting cluster membership as a new variable to our (cleaned) original data frame (<code>acs_il_t</code>). There are multiple solutions for this task, e.g. think about the <code>apply</code> family or <code>for</code> loops.</p>
 <p>Finally, display the first rows of the updated data set (with multiple cluster columns).</p>
-<div class="cell" data-hash="assignment5_peter_cache/html/unnamed-chunk-14_797fc8bb6e8b78495fa83b46b0878a30">
+<div class="cell" data-hash="assignment5_Group8_cache/html/unnamed-chunk-14_be66eec86a6ab18ac7e1d7faf7219494">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>apply_kmeans <span class="ot">&lt;-</span> <span class="cf">function</span>(K, dataset) {</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  kmeans_model <span class="ot">=</span> <span class="fu">kmeans</span>(dataset, <span class="at">centers =</span> K)</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(kmeans_model<span class="sc">$</span>cluster)</span>
